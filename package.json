@@ -5,11 +5,20 @@
   "scripts": {
     "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
     "watch:css": "tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
-    "dev": "npm run watch:css"
+    "dev": "npm run watch:css",
+    "pm2:start": "./scripts/start_pm2.sh",
+    "pm2:stop": "./scripts/stop_pm2.sh",
+    "pm2:restart": "./node_modules/.bin/pm2 restart kortekstream",
+    "pm2:logs": "./node_modules/.bin/pm2 logs kortekstream",
+    "pm2:status": "./node_modules/.bin/pm2 status",
+    "pm2:monit": "./node_modules/.bin/pm2 monit"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.1",
     "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.35"
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
+  },
+  "dependencies": {
+    "pm2": "^6.0.14"
   }
 }
