@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles that were in base.html */
+@layer base {
+  body {
+    @apply bg-[#0B0B0B] text-white font-sans;
+  }
+}
+
+@layer components {
+  /* Navigation styles */
+  .nav-link {
+    @apply text-[#A0A0A0] hover:text-white transition-colors duration-300 text-sm font-medium tracking-wide;
+  }
+  
+  /* Ad zone styles */
+  .ad-zone {
+    @apply bg-[#151515] border border-dashed border-white/10 rounded-lg p-4 my-6 text-center;
+  }
+  
+  .ad-label {
+    @apply text-[10px] uppercase tracking-widest text-[#A0A0A0] mb-2 block;
+  }
+  
+  .content-card {
+    @apply relative overflow-hidden rounded-lg transition-all duration-300 cursor-pointer;
+  }
+  
+  .content-card:hover {
+    @apply transform scale-105 z-10;
+  }
+  
+  .content-card img {
+    @apply w-full h-full object-cover;
+  }
+  
+  .gradient-overlay {
+    @apply absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent;
+  }
+  
+  .hero-gradient {
+    @apply absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent;
+  }
+  
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/10;
+  }
+  
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.8);
+    border-radius: 10px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 9, 20, 1);
+  }
+  
+  /* Loading animation */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  .loading-shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(to right, #1a1a1a 4%, #2a2a2a 25%, #1a1a1a 36%);
+    background-size: 1000px 100%;
+  }
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .text-stroke {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  }
+  
+  .clip-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

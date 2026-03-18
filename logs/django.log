@@ -9,3 +9,7 @@ WARNING 2026-03-18 15:40:26,717 views 404 Error: /static/favicon-16x16.png
 INFO 2026-03-18 15:40:29,173 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
 INFO 2026-03-18 15:40:29,656 services API Response: Success (200)
 WARNING 2026-03-18 15:40:29,690 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-18 15:54:15,063 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 15:54:24,343 services API Response: Success (200)
+INFO 2026-03-18 15:54:55,612 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 15:54:57,053 services API Response: Success (200)
