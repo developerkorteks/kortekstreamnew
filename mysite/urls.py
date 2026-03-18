@@ -35,7 +35,7 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
     # Streaming app (API-powered)
     path('', include('streaming.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Custom error handlers
 handler404 = 'streaming.views.custom_404'
