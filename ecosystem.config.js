@@ -19,11 +19,13 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 63847,
         PATH: '/root/kortekstreamnew/venv/bin:' + process.env.PATH,
+        PYTHONPATH: '/root/kortekstreamnew',
       },
       env_production: {
         NODE_ENV: 'production',
         PORT: 63847,
         PATH: '/root/kortekstreamnew/venv/bin:' + process.env.PATH,
+        PYTHONPATH: '/root/kortekstreamnew',
       },
       error_file: 'logs/pm2-error.log',
       out_file: 'logs/pm2-out.log',
