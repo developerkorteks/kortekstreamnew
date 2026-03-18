@@ -15,16 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.sitemaps.views import sitemap
 from django.views.generic import TemplateView
 from streaming.sitemaps import StaticViewSitemap
-
+from django.views.static import serve
+from django.conf import settings
+from django.conf import settings
+from django.conf.urls.static import static
 sitemaps = {
     'static': StaticViewSitemap,
 }
 
 urlpatterns = [
+    re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
     path('admin/', admin.site.urls),
     # SEO URLs
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
