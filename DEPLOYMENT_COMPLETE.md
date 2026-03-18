@@ -102,7 +102,7 @@ Created `deploy.sh` for one-command deployment:
 
 ```bash
 chmod +x deploy.sh
-./deploy.sh
+./scripts/deploy.sh
 ```
 
 **Script Actions**:
@@ -221,7 +221,7 @@ python manage.py runserver
 ### Production Deployment
 ```bash
 # One-command deployment
-./deploy.sh
+./scripts/deploy.sh
 
 # Or manually:
 npm run build:css

@@ -13,3 +13,121 @@ INFO 2026-03-18 15:54:15,063 services API Request: http://localhost:5000/api/lis
 INFO 2026-03-18 15:54:24,343 services API Response: Success (200)
 INFO 2026-03-18 15:54:55,612 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
 INFO 2026-03-18 15:54:57,053 services API Response: Success (200)
+INFO 2026-03-18 17:44:03,498 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:44:18,537 services API Response: Success (200)
+ERROR 2026-03-18 17:44:18,550 middleware Exception on /: Missing staticfiles manifest entry for 'css/output.css'
+Traceback (most recent call last):
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/korteks/Data/project/frontend/frontend/streaming/views.py", line 38, in home
+    return render(request, 'streaming/home.html', context)
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 174, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/loader_tags.py", line 160, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 166, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 1091, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/template/base.py", line 1052, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/templatetags/static.py", line 116, in render
+    url = self.url(context)
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/templatetags/static.py", line 113, in url
+    return self.handle_simple(path)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/templatetags/static.py", line 129, in handle_simple
+    return staticfiles_storage.url(path)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/contrib/staticfiles/storage.py", line 205, in url
+    return self._url(self.stored_name, name, force)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/contrib/staticfiles/storage.py", line 184, in _url
+    hashed_name = hashed_name_func(*args)
+  File "/home/korteks/Data/project/frontend/frontend/venv/lib/python3.14/site-packages/django/contrib/staticfiles/storage.py", line 524, in stored_name
+    raise ValueError(
+        "Missing staticfiles manifest entry for '%s'" % clean_name
+    )
+ValueError: Missing staticfiles manifest entry for 'css/output.css'
+ERROR 2026-03-18 17:44:18,555 views 500 Error on path: /
+WARNING 2026-03-18 17:44:18,582 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+ERROR 2026-03-18 17:44:18,583 views 500 Error on path: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-18 17:44:37,123 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:44:50,782 services API Response: Success (200)
+WARNING 2026-03-18 17:44:50,822 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-18 17:44:55,562 services API Request: http://localhost:5000/api/movie/1265609 with params: None
+ERROR 2026-03-18 17:45:25,564 services API Timeout: http://localhost:5000/api/movie/1265609
+ERROR 2026-03-18 17:45:25,564 views Movie detail error for ID 1265609: The request took too long to complete. Please try again.
+WARNING 2026-03-18 17:45:25,592 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-18 17:45:34,336 services API Request: http://localhost:5000/api/movie/1265609 with params: None
+INFO 2026-03-18 17:45:57,526 services API Response: Success (200)
+WARNING 2026-03-18 17:45:57,560 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-18 17:46:07,715 services API Request: http://localhost:5000/api/movie/1265609 with params: None
+INFO 2026-03-18 17:46:37,136 services API Request: http://localhost:5000/api/movie/1265609 with params: None
+INFO 2026-03-18 17:46:50,065 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:46:50,635 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:46:51,653 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:46:52,501 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+ERROR 2026-03-18 17:47:07,139 services API Timeout: http://localhost:5000/api/movie/1265609
+ERROR 2026-03-18 17:47:07,139 views Movie detail error for ID 1265609: The request took too long to complete. Please try again.
+INFO 2026-03-18 17:47:16,900 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+ERROR 2026-03-18 17:47:20,067 services API Timeout: http://localhost:5000/api/list/movie
+ERROR 2026-03-18 17:47:20,637 services API Timeout: http://localhost:5000/api/list/movie
+ERROR 2026-03-18 17:47:21,655 services API Timeout: http://localhost:5000/api/list/movie
+ERROR 2026-03-18 17:47:22,502 services API Timeout: http://localhost:5000/api/list/movie
+ERROR 2026-03-18 17:47:46,902 services API Timeout: http://localhost:5000/api/list/movie
+INFO 2026-03-18 17:58:58,749 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 17:59:09,803 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+ERROR 2026-03-18 17:59:28,751 services API Timeout: http://localhost:5000/api/list/movie
+ERROR 2026-03-18 17:59:39,805 services API Timeout: http://localhost:5000/api/list/movie
+INFO 2026-03-18 18:00:47,085 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:01:20,587 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:01:32,235 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+ERROR 2026-03-18 18:01:37,930 services API Error: http://localhost:5000/api/list/movie - ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+ERROR 2026-03-18 18:01:37,930 services API Error: http://localhost:5000/api/list/movie - ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+INFO 2026-03-18 18:01:41,520 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:01:42,215 services API Response: Success (200)
+INFO 2026-03-18 18:01:46,864 services API Request: http://localhost:5000/api/movie/1265609 with params: None
+INFO 2026-03-18 18:01:47,491 services API Response: Success (200)
+INFO 2026-03-18 18:01:51,885 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:01:52,256 services API Response: Success (200)
+INFO 2026-03-18 18:02:57,290 services API Request: http://localhost:5000/api/movie/1119449 with params: None
+INFO 2026-03-18 18:02:58,148 services API Response: Success (200)
+INFO 2026-03-18 18:03:28,922 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:03:29,381 services API Response: Success (200)
+INFO 2026-03-18 18:03:37,046 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:03:37,778 services API Response: Success (200)
+INFO 2026-03-18 18:03:49,358 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:03:49,737 services API Response: Success (200)
+INFO 2026-03-18 18:03:49,772 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:03:50,127 services API Response: Success (200)
+INFO 2026-03-18 18:03:56,984 services API Request: http://localhost:5000/api/movie/1119449 with params: None
+INFO 2026-03-18 18:03:57,346 services API Response: Success (200)
+INFO 2026-03-18 18:05:30,010 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:05:31,340 services API Response: Success (200)
+INFO 2026-03-18 18:05:41,472 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:05:42,296 services API Response: Success (200)
+INFO 2026-03-18 18:06:05,433 services API Request: http://localhost:5000/api/movie/799882 with params: None
+INFO 2026-03-18 18:06:06,617 services API Response: Success (200)

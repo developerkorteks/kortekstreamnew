@@ -70,26 +70,6 @@ tmp_*
 Thumbs.db
 .DS_Store
 
-# Documentation (exclude temporary/analysis docs, keep main docs)
-tmp_rovodev_*
-IMPLEMENTATION_ANALYSIS.md
-CONTENT_STRUCTURE_ANALYSIS.md
-PROVIDER_FIX_ANALYSIS.md
-DJANGO_ISSUES_ANALYSIS.md
-BUGFIX_REPORT.md
-FINAL_BUGFIX_SUMMARY.md
-COMPLETE_API_TEST_REPORT.md
-FINAL_TESTING_REPORT.md
-UI_IMPROVEMENT_*.md
-MANUAL_TEST*.md
-EPISODE_CLICK_FIX.md
-AUTOLOAD_FIX.md
-WATCHLIST_IMPLEMENTATION_SUMMARY.md
-DEPLOYMENT_PLAN.md
+# Archive docs (keeping in repo but marking as archive)
+# These are in docs/archive/ now
 
-# Keep important docs
-!ERROR_HANDLING_SUMMARY.md
-!DEPLOYMENT_GUIDE.md
-!README.md
-!API_DOCUMENTATION.md
-!ADSTERRA_SETUP_GUIDE.md
