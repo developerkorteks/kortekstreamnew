@@ -215,3 +215,5 @@ INFO 2026-03-18 18:26:51,812 services API Request: http://localhost:5000/api/lis
 INFO 2026-03-18 18:26:52,266 services API Response: Success (200)
 INFO 2026-03-18 18:26:56,092 services API Request: http://localhost:5000/api/movie/799882 with params: None
 INFO 2026-03-18 18:26:58,271 services API Response: Success (200)
+INFO 2026-03-18 18:37:34,139 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 18:37:35,037 services API Response: Success (200)
