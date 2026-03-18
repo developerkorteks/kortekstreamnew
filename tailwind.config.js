@@ -11,9 +11,15 @@ module.exports = {
       colors: {
         'netflix-red': '#e50914',
         'netflix-black': '#141414',
+        'dark': '#0B0B0B',
+        'card': '#151515',
+        'accent': '#e50914',
+        'secondary': '#A0A0A0',
       },
       fontFamily: {
+        'header': ['"Playfair Display"', 'serif'],
         'display': ['"Playfair Display"', 'serif'],
+        'body': ['Inter', 'sans-serif'],
         'sans': ['Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
