@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>KortekStream Debug Test</h1>
+    <div id="output"></div>
+    
+    <script>
+        // Copy watchlist.js content here
+        const KortekStream = {
+            getWatchlist() {
+                const data = localStorage.getItem('kortekstream_watchlist');
+                return data ? JSON.parse(data) : [];
+            },
+            addToWatchlist(item) {
+                const watchlist = this.getWatchlist();
+                const exists = watchlist.find(i => i.id === item.id && i.type === item.type);
+                if (!exists) {
+                    watchlist.unshift({
+                        id: item.id,
+                        type: item.type,
+                        title: item.title,
+                        poster: item.poster,
+                        addedAt: new Date().toISOString()
+                    });
+                    localStorage.setItem('kortekstream_watchlist', JSON.stringify(watchlist));
+                    return true;
+                }
+                return false;
+            },
+            getHistory() {
+                const data = localStorage.getItem('kortekstream_history');
+                return data ? JSON.parse(data) : [];
+            },
+            addToHistory(item) {
+                let history = this.getHistory();
+                history = history.filter(i => !(i.id === item.id && i.type === item.type));
+                history.unshift({
+                    id: item.id,
+                    type: item.type,
+                    title: item.title,
+                    poster: item.poster,
+                    episode: item.episode || null,
+                    season: item.season || null,
+                    watchedAt: new Date().toISOString(),
+                    progress: item.progress || 0
+                });
+                if (history.length > 50) {
+                    history = history.slice(0, 50);
+                }
+                localStorage.setItem('kortekstream_history', JSON.stringify(history));
+            },
+            getStats() {
+                return {
+                    watching: this.getHistory().length,
+                    toWatch: this.getWatchlist().length,
+                    watched: 0,
+                    collections: 0
+                };
+            }
+        };
+        
+        // Test
+        console.log('Testing KortekStream...');
+        
+        // Add test history
+        KortekStream.addToHistory({
+            id: 'test123',
+            type: 'movie',
+            title: 'Test Movie',
+            poster: 'https://via.placeholder.com/300x450'
+        });
+        
+        // Check
+        const stats = KortekStream.getStats();
+        const history = KortekStream.getHistory();
+        
+        document.getElementById('output').innerHTML = `
+            <h2>Stats:</h2>
+            <pre>${JSON.stringify(stats, null, 2)}</pre>
+            
+            <h2>History:</h2>
+            <pre>${JSON.stringify(history, null, 2)}</pre>
+        `;
+        
+        console.log('Stats:', stats);
+        console.log('History:', history);
+    </script>
+</body>
+</html>

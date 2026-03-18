@@ -1,0 +1,11 @@
+WARNING 2026-03-18 15:39:57,256 views 404 Error: /nonexistent-page/
+INFO 2026-03-18 15:39:57,299 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 15:39:57,992 services API Response: Success (200)
+WARNING 2026-03-18 15:40:22,582 views 404 Error: /fderfr
+WARNING 2026-03-18 15:40:22,617 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-18 15:40:26,635 views 404 Error: /static/favicon.ico
+WARNING 2026-03-18 15:40:26,663 views 404 Error: /static/favicon-32x32.png
+WARNING 2026-03-18 15:40:26,717 views 404 Error: /static/favicon-16x16.png
+INFO 2026-03-18 15:40:29,173 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
+INFO 2026-03-18 15:40:29,656 services API Response: Success (200)
+WARNING 2026-03-18 15:40:29,690 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json

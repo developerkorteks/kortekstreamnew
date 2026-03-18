@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - Streaming Site{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 80px 20px;">
+    <div style="font-size: 120px; margin-bottom: 20px; opacity: 0.5;">404</div>
+    <h1 style="font-size: 36px; margin-bottom: 20px; color: #fff;">Page Not Found</h1>
+    
+    <div style="background: #2a2a2a; padding: 30px; border-radius: 10px; margin: 30px auto; max-width: 600px;">
+        <p style="color: #ccc; font-size: 18px; margin-bottom: 20px;">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+        
+        <div style="margin-top: 30px;">
+            <a href="{% url 'streaming:home' %}" 
+               style="display: inline-block; padding: 12px 30px; background: #e50914; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                ← Back to Home
+            </a>
+            
+            <a href="{% url 'streaming:search' %}" 
+               style="display: inline-block; padding: 12px 30px; background: #555; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-left: 10px;">
+                🔍 Search Content
+            </a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; color: #888;">
+        <p>Popular Categories:</p>
+        <div style="margin-top: 15px;">
+            <a href="{% url 'streaming:movie_list' %}" style="color: #e50914; margin: 0 15px;">Movies</a>
+            <a href="{% url 'streaming:tv_list' %}" style="color: #e50914; margin: 0 15px;">TV Shows</a>
+            <a href="{% url 'streaming:anime_list' %}" style="color: #e50914; margin: 0 15px;">Anime</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Error - Streaming Site{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 80px 20px;">
+    <div style="font-size: 72px; margin-bottom: 20px;">⚠️</div>
+    <h1 style="font-size: 36px; margin-bottom: 20px;">Oops! Something went wrong</h1>
+    
+    <div style="background: #2a2a2a; padding: 30px; border-radius: 10px; margin: 30px auto; max-width: 600px;">
+        <p style="color: #ccc; font-size: 18px; margin-bottom: 20px;">
+            {% if error_message %}
+                {{ error_message }}
+            {% else %}
+                We're having trouble loading this content. Please try again later.
+            {% endif %}
+        </p>
+        
+        <div style="margin-top: 30px;">
+            <a href="{% url 'streaming:home' %}" 
+               style="display: inline-block; padding: 12px 30px; background: #e50914; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                ← Back to Home
+            </a>
+            
+            <a href="javascript:history.back()" 
+               style="display: inline-block; padding: 12px 30px; background: #555; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-left: 10px;">
+                ← Go Back
+            </a>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; color: #888;">
+        <p>If this problem persists, please try:</p>
+        <ul style="list-style: none; padding: 0; margin-top: 15px;">
+            <li style="margin: 10px 0;">🔄 Refreshing the page</li>
+            <li style="margin: 10px 0;">🔍 Trying a different content</li>
+            <li style="margin: 10px 0;">🏠 Going back to homepage</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

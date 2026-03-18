@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - Streaming Site</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+        }
+        .error-code {
+            font-size: 120px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+            font-weight: bold;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .error-box {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px auto;
+        }
+        p {
+            color: #ccc;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #e50914;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px;
+        }
+        .button:hover {
+            background: #b20710;
+        }
+        .suggestions {
+            margin-top: 40px;
+            color: #888;
+        }
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        .suggestions li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-code">500</div>
+        <h1>Internal Server Error</h1>
+        
+        <div class="error-box">
+            <p>
+                We're sorry, but something went wrong on our end. 
+                Our team has been notified and is working to fix the issue.
+            </p>
+            
+            <div style="margin-top: 30px;">
+                <a href="/" class="button">← Back to Home</a>
+                <a href="javascript:location.reload()" class="button" style="background: #555;">🔄 Refresh Page</a>
+            </div>
+        </div>
+        
+        <div class="suggestions">
+            <p>What you can try:</p>
+            <ul>
+                <li>🔄 Refresh the page in a few moments</li>
+                <li>🏠 Go back to the homepage</li>
+                <li>⏰ Try again later</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

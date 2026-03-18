@@ -1,0 +1,808 @@
+{% extends 'base.html' %}
+{% load adsterra_tags %}
+{% load custom_filters %}
+
+{% block title %}{% if content.title %}{{ content.title }}{% else %}{{ content.name }}{% endif %} - KortekStream Player{% endblock %}
+
+{% block content %}
+{% if error %}
+<!-- ERROR STATE -->
+<div class="glass rounded-3xl p-12 md:p-16 text-center">
+    <div class="text-5xl md:text-6xl mb-6">⚠️</div>
+    <h2 class="font-header text-2xl md:text-3xl mb-4 font-bold">CONTENT <span class="text-accent italic">UNAVAILABLE</span></h2>
+    <p class="text-secondary text-sm md:text-base max-w-md mx-auto">{{ error }}</p>
+    <a href="javascript:history.back()" class="inline-block mt-6 px-6 py-3 glass hover:bg-accent/20 border border-white/10 hover:border-accent/40 rounded-xl text-xs font-bold transition-all">
+        ← GO BACK
+    </a>
+</div>
+{% elif content %}
+
+<!-- ULTRA COMPACT HEADER -->
+<div class="mb-8">
+    <!-- Back Link -->
+    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-secondary hover:text-white text-xs font-bold mb-6 transition-colors group">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span>
+        <span class="tracking-wider">BACK</span>
+    </a>
+    
+    <!-- Title & Meta (Ultra Compact - Single Line on Desktop) -->
+    <div class="mb-4">
+        <h1 class="font-header text-2xl md:text-3xl lg:text-4xl font-black mb-3 md:mb-4 tracking-tight leading-tight">
+            {% if content.title %}{{ content.title }}{% else %}{{ content.name }}{% endif %}
+        </h1>
+        
+        <!-- Compact Meta Row -->
+        <div class="flex flex-wrap items-center gap-2 md:gap-3 text-xs">
+            <!-- Content Type Badge -->
+            <span class="px-3 py-1.5 bg-accent/20 border border-accent/40 rounded-lg text-accent font-bold uppercase tracking-wider">
+                {{ content_type }}
+            </span>
+            
+            <!-- Year -->
+            {% if content.release_date %}
+            <span class="text-secondary font-medium">{{ content.release_date|slice:":4" }}</span>
+            {% elif content.first_air_date %}
+            <span class="text-secondary font-medium">{{ content.first_air_date|slice:":4" }}</span>
+            {% endif %}
+            
+            <!-- Runtime -->
+            {% if content.runtime %}
+            <span class="hidden sm:inline text-secondary/80">·</span>
+            <span class="text-secondary font-medium">{{ content.runtime }} min</span>
+            {% endif %}
+            
+            <!-- Rating -->
+            {% if content.vote_average %}
+            <span class="hidden sm:inline text-secondary/80">·</span>
+            <span class="px-3 py-1.5 bg-yellow-500/20 border border-yellow-500/40 rounded-lg text-yellow-400 font-bold flex items-center gap-1">
+                <span class="text-yellow-500">★</span>
+                {{ content.vote_average|floatformat:1 }}
+            </span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ADSTERRA: PLAYER TOP ADS ZONE (Responsive) -->
+<!-- ============================================ -->
+<div class="ad-zone mb-6 md:mb-8">
+    <div class="relative overflow-hidden rounded-2xl md:rounded-3xl border border-white/5 
+                bg-gradient-to-br from-white/[0.02] to-transparent 
+                backdrop-blur-sm p-6 md:p-8">
+        <!-- Subtle Label -->
+        <div class="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
+            <div class="w-6 md:w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            <span class="text-[9px] md:text-[10px] font-bold text-secondary/60 uppercase tracking-[0.25em] md:tracking-[0.3em]">
+                Sponsored
+            </span>
+            <div class="w-6 md:w-8 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        </div>
+        
+        <!-- Ad Content -->
+        {% render_responsive_ads 'player_top' page_type %}
+    </div>
+</div>
+
+<!-- CINEMATIC VIDEO SECTION - Full Width on Mobile -->
+<div class="relative group mt-6 md:mt-8 -mx-4 md:mx-0">
+    <!-- Enhanced Cinematic Glow Effect (Stronger on Desktop) -->
+    <div class="absolute -inset-1 md:-inset-2 bg-gradient-to-r from-accent/20 via-accent/30 to-accent/20 
+                rounded-none md:rounded-[32px] blur-xl md:blur-2xl opacity-30 md:opacity-40 group-hover:opacity-60 md:group-hover:opacity-70 
+                transition-all duration-700 animate-pulse-slow"></div>
+    
+    <!-- Premium Player Container -->
+    <div class="relative bg-gradient-to-b from-black to-black/95 
+                rounded-none md:rounded-[28px] overflow-hidden 
+                border-0 md:border border-white/10 shadow-2xl md:shadow-[0_0_60px_rgba(0,0,0,0.5)]
+                ring-0 md:ring-1 ring-white/5">
+        
+        <!-- Compact Episode Selector Overlay (TV/Anime) - Responsive -->
+        {% if content_type == 'tv' or content_type == 'anime' %}
+        <div class="absolute top-3 left-3 md:top-4 md:left-4 z-30 flex gap-1.5 md:gap-2 items-center flex-wrap">
+            {% if content_type == 'tv' %}
+                {% if content.seasons %}
+                <div class="relative">
+                    <select id="seasonSelector" 
+                            onchange="changeSeason(this.value)"
+                            class="bg-black/80 backdrop-blur-xl border border-white/20
+                                   rounded-lg md:rounded-xl pl-3 md:pl-4 pr-8 md:pr-9 py-1.5 md:py-2 text-[10px] md:text-xs font-bold
+                                   appearance-none cursor-pointer
+                                   hover:border-accent/60 hover:bg-black/90
+                                   focus:border-accent focus:ring-1 focus:ring-accent/20
+                                   transition-all outline-none shadow-lg">
+                        {% for season in content.seasons %}
+                        <option value="{{ season.season_number }}" {% if season.season_number == current_season %}selected{% endif %} class="bg-black">
+                            S{{ season.season_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <span class="absolute right-2 md:right-3 top-1.5 md:top-2 text-accent text-[9px] md:text-[10px] pointer-events-none">▼</span>
+                </div>
+                {% endif %}
+                
+                {% if content.episodes %}
+                <div class="relative">
+                    <select id="episodeSelector" 
+                            onchange="changeEpisode(this.value)"
+                            class="bg-black/80 backdrop-blur-xl border border-white/20
+                                   rounded-lg md:rounded-xl pl-3 md:pl-4 pr-8 md:pr-9 py-1.5 md:py-2 text-[10px] md:text-xs font-bold
+                                   appearance-none cursor-pointer
+                                   hover:border-accent/60 hover:bg-black/90
+                                   focus:border-accent focus:ring-1 focus:ring-accent/20
+                                   transition-all outline-none shadow-lg">
+                        {% for episode in content.episodes %}
+                        <option value="{{ episode.episode_number }}" {% if episode.episode_number == current_episode %}selected{% endif %} class="bg-black">
+                            EP{{ episode.episode_number }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <span class="absolute right-2 md:right-3 top-1.5 md:top-2 text-accent text-[9px] md:text-[10px] pointer-events-none">▼</span>
+                </div>
+                {% endif %}
+            {% endif %}
+            
+            {% if content_type == 'anime' %}
+                {% if content.episodes %}
+                <div class="relative">
+                    <select id="animeEpisodeSelector" 
+                            onchange="changeAnimeEpisode(this.value)"
+                            class="bg-black/80 backdrop-blur-xl border border-white/20
+                                   rounded-lg md:rounded-xl pl-3 md:pl-4 pr-8 md:pr-9 py-1.5 md:py-2 text-[10px] md:text-xs font-bold
+                                   appearance-none cursor-pointer
+                                   hover:border-accent/60 hover:bg-black/90
+                                   focus:border-accent focus:ring-1 focus:ring-accent/20
+                                   transition-all outline-none shadow-lg">
+                        {% for episode in content.episodes %}
+                        <option value="{{ episode.episode_no }}" {% if episode.episode_no == current_episode %}selected{% endif %} class="bg-black">
+                            EP{{ episode.episode_no }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <span class="absolute right-2 md:right-3 top-1.5 md:top-2 text-accent text-[9px] md:text-[10px] pointer-events-none">▼</span>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Video Player Container -->
+        <div id="videoPlayerContainer" class="relative pt-[56.25%] bg-black">
+            <!-- Enhanced Placeholder Screen -->
+            <div id="playerPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8
+                                              bg-gradient-to-br from-black via-accent/5 to-black
+                                              animate-gradient-slow">
+                <!-- Animated Play Button -->
+                <div class="relative mb-8 cursor-pointer group" onclick="triggerFirstEpisode()">
+                    <!-- Pulse Ring -->
+                    <div class="absolute inset-0 w-24 h-24 bg-accent/30 rounded-full 
+                                animate-ping-slow opacity-75"></div>
+                    
+                    <!-- Main Button -->
+                    <div class="relative w-24 h-24 bg-gradient-to-br from-accent to-red-700 
+                                rounded-full flex items-center justify-center
+                                shadow-[0_0_60px_rgba(229,9,20,0.6)]
+                                group-hover:scale-110 group-hover:shadow-[0_0_80px_rgba(229,9,20,0.8)]
+                                transition-all duration-300">
+                        <svg class="w-10 h-10 ml-1.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <h3 class="font-header text-2xl md:text-3xl font-black mb-3 tracking-tight">
+                    READY TO <span class="text-accent italic">WATCH?</span>
+                </h3>
+                
+                <!-- Description -->
+                <p class="text-secondary text-sm md:text-base max-w-md mb-6 leading-relaxed">
+                    Choose a streaming provider below or click an episode to begin your cinematic experience
+                </p>
+                
+                <!-- Indicator -->
+                <div class="flex items-center gap-2 text-xs text-secondary/60 animate-bounce-slow">
+                    <span>↓</span>
+                    <span class="uppercase tracking-wider">Select Provider</span>
+                    <span>↓</span>
+                </div>
+            </div>
+            
+            <iframe id="videoPlayer" 
+                    class="absolute inset-0 w-full h-full border-none hidden"
+                    allowfullscreen>
+            </iframe>
+        </div>
+        
+        <!-- Provider Bar (Responsive: Dropdown on Mobile, Buttons on Desktop) -->
+        <div id="providerSelector" class="px-3 md:px-4 py-2.5 md:py-3 bg-gradient-to-r from-black/95 via-black/90 to-black/95 
+                                          backdrop-blur-2xl border-t border-white/10">
+            <!-- Desktop: Horizontal Buttons -->
+            <div class="hidden md:flex items-center gap-3 md:gap-4">
+                <div class="flex items-center gap-2 shrink-0">
+                    <div class="w-0.5 h-5 md:h-6 bg-accent rounded-full"></div>
+                    <span class="text-[9px] md:text-[10px] font-bold text-secondary/80 uppercase tracking-wider">Providers</span>
+                </div>
+                <div id="providerButtons" class="flex flex-wrap gap-2 flex-1">
+                    <!-- JavaScript will inject provider buttons here -->
+                </div>
+            </div>
+            
+            <!-- Mobile: Compact Dropdown -->
+            <div class="md:hidden">
+                <label id="providerLabel" class="text-[9px] font-bold text-secondary/80 uppercase tracking-wider mb-2 block">
+                    {% if content_type == 'movie' %}Select Your Source{% else %}Select Provider{% endif %}
+                </label>
+                <select id="providerDropdown" onchange="handleProviderChange(this.value)" 
+                        class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-xs font-bold
+                               focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-all">
+                    <option value="">{% if content_type == 'movie' %}Choose a source...{% else %}Choose a provider...{% endif %}</option>
+                    <!-- JavaScript will inject provider options here -->
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EPISODES GRID (TV/ANIME) - Optimized Responsive -->
+{% if content_type == 'tv' or content_type == 'anime' %}
+<div class="mt-10 md:mt-12">
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 md:mb-8 px-1">
+        <h2 class="font-header text-xl md:text-2xl tracking-wider font-bold italic">
+            EPISODES <span class="text-accent">LIST</span>
+        </h2>
+        
+        <!-- Episode Search (Only for large lists) -->
+        {% if content.episodes|length > 20 %}
+        <div class="flex items-center gap-2">
+            <input type="number" id="epSearch" placeholder="Jump to EP..." 
+                   class="glass px-3 md:px-4 py-2 rounded-lg md:rounded-full text-[10px] md:text-xs w-32 border-white/5 outline-none focus:border-accent/40 transition-all">
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Responsive Grid: 2/3/4/5/6 columns -->
+    <div id="episodesList" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 
+                                   gap-3 sm:gap-4 md:gap-5 lg:gap-6 
+                                   max-h-[400px] md:max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+        {% for episode in content.episodes %}
+        {% if content_type == 'tv' %}
+        <div class="episode-card group cursor-pointer" 
+             data-episode="{{ episode.episode_number }}"
+             id="ep-{{ episode.episode_number }}"
+             data-sources='{{ episode.sources|to_json }}'
+             onclick="handleEpisodeClick(this)">
+            
+            <!-- Enhanced Episode Card - Responsive -->
+            <div class="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-2 md:mb-3
+                        bg-black/40 backdrop-blur-sm
+                        border border-white/10
+                        group-hover:border-accent/40
+                        group-hover:shadow-[0_0_15px_rgba(229,9,20,0.15)] md:group-hover:shadow-[0_0_20px_rgba(229,9,20,0.15)]
+                        transition-all duration-300">
+                
+                <!-- Episode Thumbnail (if available) -->
+                {% if episode.still_path %}
+                <img src="https://image.tmdb.org/t/p/w300{{ episode.still_path }}" 
+                     class="absolute inset-0 w-full h-full object-cover 
+                            opacity-50 group-hover:opacity-80 
+                            group-hover:scale-105 
+                            transition-all duration-500" 
+                     alt="Episode {{ episode.episode_number }}" 
+                     loading="lazy" />
+                
+                <!-- Dark Overlay for Text Readability -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30"></div>
+                {% else %}
+                <!-- Subtle Gradient Placeholder (NO Red) -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-transparent"></div>
+                {% endif %}
+                
+                <!-- Episode Number Overlay -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="font-header text-2xl sm:text-3xl md:text-4xl font-black 
+                                 text-white/20 group-hover:text-white/80
+                                 group-hover:scale-110 transition-all duration-300">
+                        {{ episode.episode_number }}
+                    </span>
+                </div>
+                
+                <!-- Accent Line on Hover (Bottom) -->
+                <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-accent scale-x-0 
+                            group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                
+                <!-- Now Playing Badge -->
+                {% if episode.episode_number == current_episode %}
+                <div class="absolute top-1.5 right-1.5 md:top-2 md:right-2 px-1.5 md:px-2 py-0.5 md:py-1 
+                            bg-accent/90 backdrop-blur-sm rounded-md md:rounded-lg text-[8px] md:text-[9px] font-black uppercase
+                            shadow-lg">
+                    NOW
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Episode Info - Compact -->
+            <div class="px-0.5 md:px-1">
+                <div class="text-[11px] md:text-xs font-bold text-white group-hover:text-accent 
+                            transition-colors truncate mb-0.5 md:mb-1">
+                    {{ episode.name|default:"Episode" }} {{ episode.episode_number }}
+                </div>
+                {% if episode.runtime %}
+                <div class="text-[9px] md:text-[10px] text-secondary">
+                    {{ episode.runtime }} min
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% elif content_type == 'anime' %}
+        <div class="episode-card group cursor-pointer" 
+             data-episode="{{ episode.episode_no }}"
+             id="ep-{{ episode.episode_no }}"
+             data-sources='{{ episode.sources|to_json }}'
+             onclick="handleEpisodeClick(this)">
+            
+            <!-- Enhanced Episode Card - Responsive (Anime) -->
+            <div class="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-2 md:mb-3
+                        bg-black/40 backdrop-blur-sm
+                        border border-white/10
+                        group-hover:border-accent/40
+                        group-hover:shadow-[0_0_15px_rgba(229,9,20,0.15)] md:group-hover:shadow-[0_0_20px_rgba(229,9,20,0.15)]
+                        transition-all duration-300">
+                
+                <!-- Subtle Gradient Placeholder (NO Red) -->
+                <div class="absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-transparent"></div>
+                
+                <!-- Episode Number Overlay -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="font-header text-2xl sm:text-3xl md:text-4xl font-black 
+                                 text-white/20 group-hover:text-white/80
+                                 group-hover:scale-110 transition-all duration-300">
+                        {{ episode.episode_no }}
+                    </span>
+                </div>
+                
+                <!-- Accent Line on Hover (Bottom) -->
+                <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-accent scale-x-0 
+                            group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                
+                <!-- Now Playing Badge -->
+                {% if episode.episode_no == current_episode %}
+                <div class="absolute top-1.5 right-1.5 md:top-2 md:right-2 px-1.5 md:px-2 py-0.5 md:py-1 
+                            bg-accent/90 backdrop-blur-sm rounded-md md:rounded-lg text-[8px] md:text-[9px] font-black uppercase
+                            shadow-lg">
+                    NOW
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Episode Info - Compact -->
+            <div class="px-0.5 md:px-1">
+                <div class="text-[11px] md:text-xs font-bold text-white group-hover:text-accent 
+                            transition-colors truncate">
+                    EP {{ episode.episode_no }}{% if episode.title %} - {{ episode.title|truncatewords:3 }}{% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+<!-- OVERVIEW SECTION - Responsive -->
+{% if content.overview or content.description %}
+<div class="mt-10 md:mt-12 border-t border-white/5 pt-10 md:pt-12">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-10 lg:gap-12">
+        <div class="flex-1">
+            <h2 class="font-header text-xl md:text-2xl tracking-wider font-bold mb-4 md:mb-6 italic">STORY <span class="text-accent">LINE</span></h2>
+            <p class="text-secondary text-sm md:text-base leading-relaxed font-light">
+                {{ content.overview|default:content.description }}
+            </p>
+        </div>
+        
+        <div class="w-full md:w-1/3">
+             <div class="glass rounded-2xl md:rounded-3xl p-5 md:p-6">
+                <h3 class="font-header text-sm tracking-widest font-bold mb-4 uppercase">DETAILS</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between text-[11px]">
+                        <span class="text-secondary uppercase">Status</span>
+                        <span class="text-white">{% if content_type == 'anime' %}{{ content.status|default:"Ongoing" }}{% else %}{{ content.status|default:"Released" }}{% endif %}</span>
+                    </div>
+                    {% if content_type == 'anime' %}
+                        {% if anime_info.Studios %}
+                        <div class="flex justify-between text-[11px]">
+                            <span class="text-secondary uppercase">Studio</span>
+                            <span class="text-white">{{ anime_info.Studios.0 }}</span>
+                        </div>
+                        {% endif %}
+                        {% if anime_info.Premiered %}
+                        <div class="flex justify-between text-[11px]">
+                            <span class="text-secondary uppercase">Premiered</span>
+                            <span class="text-white">{{ anime_info.Premiered }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="flex flex-wrap gap-1 mt-4">
+                            {% for genre in anime_info.Genres %}
+                            <span class="text-[9px] bg-white/5 px-2 py-1 rounded-full text-secondary">{{ genre|upper }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="flex justify-between text-[11px]">
+                            <span class="text-secondary uppercase">Origin</span>
+                            <span class="text-white">{% for country in content.production_countries|slice:":1" %}{{ country.name }}{% endfor %}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-4">
+                            {% for genre in content.genres %}
+                            <span class="text-[9px] bg-white/5 px-2 py-1 rounded-full text-secondary">{{ genre|upper }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+             </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ============================================ -->
+<!-- ADSTERRA: PLAYER BOTTOM ADS ZONE (Responsive) -->
+<!-- ============================================ -->
+<div class="ad-zone mt-10 md:mt-12">
+    <div class="relative overflow-hidden rounded-2xl md:rounded-3xl border border-white/5 
+                bg-gradient-to-br from-white/[0.02] to-transparent 
+                backdrop-blur-sm p-6 md:p-8">
+        <!-- Subtle Label -->
+        <div class="flex items-center justify-center gap-3 md:gap-4 mb-4 md:mb-6">
+            <div class="w-8 md:w-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            <span class="text-[9px] md:text-[10px] font-bold text-secondary/60 uppercase tracking-[0.25em] md:tracking-[0.3em]">
+                Advertisement
+            </span>
+            <div class="w-8 md:w-12 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+        </div>
+        
+        <!-- Ad Content -->
+        {% render_responsive_ads 'player_bottom' page_type %}
+        
+        <!-- Thank You Note -->
+        <div class="mt-4 md:mt-6 text-center">
+            <p class="text-[10px] md:text-xs text-secondary/40 italic">
+                Thanks for supporting our free streaming service
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Player -->
+<script>
+// ============================================
+// AUTO-TRACK VIEWING HISTORY (EXECUTE FIRST!)
+// ============================================
+console.log('Page loaded, checking KortekStream...');
+if (typeof KortekStream !== 'undefined' && '{{ content.id }}') {
+    const historyItem = {
+        id: '{{ content.id }}',
+        type: '{{ content_type }}',
+        title: '{% if content.title %}{{ content.title|escapejs }}{% else %}{{ content.name|escapejs }}{% endif %}',
+        poster: '{% if content.poster %}{{ content.poster }}{% elif content.poster_path %}https://image.tmdb.org/t/p/w500{{ content.poster_path }}{% elif content.image %}{{ content.image }}{% endif %}',
+        {% if content_type == 'tv' %}
+        season: {{ current_season|default:'null' }},
+        episode: {{ current_episode|default:'null' }},
+        {% elif content_type == 'anime' %}
+        episode: {{ current_episode|default:'null' }},
+        {% endif %}
+    };
+    
+    KortekStream.addToHistory(historyItem);
+    console.log('✅ AUTO-TRACK SUCCESS! Added to history:', historyItem.title, historyItem);
+} else {
+    console.error('❌ AUTO-TRACK FAILED! KortekStream:', typeof KortekStream, 'content.id:', '{{ content.id }}');
+}
+
+// ============================================
+// PLAYER JAVASCRIPT LOGIC
+// ============================================
+let currentEpisode = null;
+let currentSources = [];
+
+// TV Series: Change Season
+function changeSeason(season) {
+    window.location.href = '?season=' + season + '&episode=1';
+}
+
+// TV Series: Change Episode
+function changeEpisode(episode) {
+    const season = {{ current_season|default:1 }};
+    window.location.href = '?season=' + season + '&episode=' + episode;
+}
+
+// Anime: Change Episode
+function changeAnimeEpisode(episode) {
+    window.location.href = '?ep=' + episode;
+}
+
+function handleEpisodeClick(element) {
+    const epNum = element.dataset.episode;
+    const contentType = '{{ content_type }}';
+    
+    // For TV series, reload page with new episode parameter
+    if (contentType === 'tv') {
+        const currentSeason = {{ current_season|default:1 }};
+        window.location.href = '?season=' + currentSeason + '&episode=' + epNum;
+    }
+    // For anime, reload page with new episode parameter
+    else if (contentType === 'anime') {
+        window.location.href = '?ep=' + epNum;
+    }
+    // For movies or fallback, use the old method
+    else {
+        const sourcesData = element.dataset.sources;
+        if (sourcesData) {
+            try {
+                const sources = JSON.parse(sourcesData);
+                selectEpisode(epNum, sources);
+            } catch (e) {
+                console.error("Failed to parse sources for episode " + epNum, e);
+            }
+        }
+    }
+}
+
+function selectEpisode(episodeNumber, sources) {
+    currentEpisode = episodeNumber;
+    currentSources = sources;
+    
+    console.log("Selecting episode:", episodeNumber, sources);
+
+    // Update active episode styling
+    document.querySelectorAll('.episode-card').forEach(card => {
+        const epNum = card.dataset.episode;
+        const epIndicator = card.querySelector('.glass');
+        const epSpan = card.querySelector('span');
+        
+        if (epNum == episodeNumber) {
+            epIndicator.classList.add('border-accent/60', 'bg-accent/5');
+            epSpan.classList.remove('text-white/20');
+            epSpan.classList.add('text-accent');
+        } else {
+            epIndicator.classList.remove('border-accent/60', 'bg-accent/5');
+            epSpan.classList.add('text-white/20');
+            epSpan.classList.remove('text-accent');
+        }
+    });
+    
+    // Show provider selector
+    showProviderSelector(sources);
+    
+    // Scroll to player
+    document.getElementById('videoPlayerContainer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showProviderSelector(sources) {
+    const providerButtons = document.getElementById('providerButtons');
+    const providerDropdown = document.getElementById('providerDropdown');
+    
+    if (!sources || sources.length === 0) {
+        console.warn("No sources available");
+        if (providerButtons) providerButtons.innerHTML = '<span class="text-xs text-secondary">No providers available</span>';
+        return;
+    }
+
+    // Desktop: Create buttons
+    if (providerButtons) {
+        providerButtons.innerHTML = '';
+        sources.forEach((source, index) => {
+            const button = document.createElement('button');
+            button.onclick = (e) => loadSource(source.url, e.target);
+            button.className = `
+                relative overflow-hidden group
+                bg-white/5 hover:bg-accent
+                border border-white/10 hover:border-accent
+                rounded-lg px-3 py-1.5
+                text-[11px] font-bold text-white
+                transition-all duration-200
+                hover:scale-105
+            `;
+            button.innerHTML = `
+                <div class="absolute inset-0 -translate-x-full group-hover:translate-x-full
+                            bg-gradient-to-r from-transparent via-white/10 to-transparent
+                            transition-transform duration-500"></div>
+                <span class="relative z-10">${(source.provider || 'Source ' + (index+1)).toUpperCase()}</span>
+            `;
+            providerButtons.appendChild(button);
+        });
+    }
+    
+    // Mobile: Create dropdown options
+    if (providerDropdown) {
+        const contentType = '{{ content_type }}';
+        const placeholderText = contentType === 'movie' ? 'Choose a source...' : 'Choose a provider...';
+        providerDropdown.innerHTML = `<option value="">${placeholderText}</option>`;
+        sources.forEach((source, index) => {
+            const option = document.createElement('option');
+            option.value = source.url;
+            option.textContent = (source.provider || 'Source ' + (index+1)).toUpperCase();
+            providerDropdown.appendChild(option);
+        });
+    }
+}
+
+// Handle provider selection from dropdown (mobile)
+function handleProviderChange(url) {
+    if (url) {
+        loadSource(url);
+    }
+}
+
+function loadSource(url, btnElement) {
+    if (!url) {
+        console.error("Invalid source URL");
+        return;
+    }
+
+    const videoPlayer = document.getElementById('videoPlayer');
+    const placeholder = document.getElementById('playerPlaceholder');
+    
+    console.log("Loading source URL:", url);
+
+    // Hide placeholder, show iframe
+    placeholder.classList.add('hidden');
+    videoPlayer.classList.remove('hidden');
+    
+    // Load video source
+    videoPlayer.src = url;
+    
+    // Update button styles
+    if (btnElement) {
+        // Reset all buttons in parent
+        const parent = btnElement.parentElement;
+        parent.querySelectorAll('button').forEach(b => {
+            b.classList.remove('bg-accent', 'border-accent');
+            b.classList.add('glass');
+        });
+        // Highlight active
+        btnElement.classList.add('bg-accent', 'border-accent');
+        btnElement.classList.remove('glass');
+    }
+    
+    // Scroll to player
+    document.getElementById('videoPlayerContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function triggerFirstEpisode() {
+    const firstEp = document.querySelector('.episode-card');
+    if (firstEp) {
+        firstEp.click();
+    } else {
+        // Handle movies
+        const movieBtn = document.querySelector('.movie-provider-btn');
+        if (movieBtn) movieBtn.click();
+    }
+}
+
+// Episode Search / Jump functionality
+const epSearch = document.getElementById('epSearch');
+if (epSearch) {
+    epSearch.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (val) {
+            const target = document.getElementById(`ep-${val}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('ring-2', 'ring-accent', 'ring-offset-2', 'ring-offset-dark');
+                setTimeout(() => target.classList.remove('ring-2', 'ring-accent', 'ring-offset-2', 'ring-offset-dark'), 2000);
+            }
+        }
+    });
+}
+
+// Auto-load sources on page load (unified for all content types)
+document.addEventListener('DOMContentLoaded', function() {
+    {% if sources %}
+    // Use Django-provided sources (works for movie, tv, anime)
+    const sources = {{ sources|safe }};
+    
+    if (sources && sources.length > 0) {
+        // Show provider selector (both desktop and mobile)
+        showProviderSelector(sources);
+        
+        // Auto-load first source
+        loadSource(sources[0].url);
+        
+        // Highlight current episode if applicable
+        const currentEp = {{ current_episode|default:'null' }};
+        if (currentEp) {
+            const currentEpCard = document.querySelector(`[data-episode="${currentEp}"]`);
+            if (currentEpCard) {
+                const cardElement = currentEpCard.querySelector('.relative');
+                if (cardElement) {
+                    cardElement.classList.add('border-accent/60');
+                }
+            }
+        }
+    }
+    {% endif %}
+});
+</script>
+
+<style>
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.3);
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 9, 20, 0.6);
+}
+
+/* Pulse animation for glow effect */
+@keyframes pulse-slow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.6; }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+}
+
+/* Shimmer effect for provider buttons */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Animated gradient background */
+@keyframes gradient-slow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+.animate-gradient-slow {
+    background-size: 200% 200%;
+    animation: gradient-slow 8s ease infinite;
+}
+
+/* Ping animation for play button */
+@keyframes ping-slow {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+.animate-ping-slow {
+    animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Bounce animation for indicator */
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.animate-bounce-slow {
+    animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* Hide horizontal scrollbar for breadcrumb */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+</style>
+
+
+{% else %}
+<div class="glass rounded-3xl p-20 text-center">
+    <div class="text-7xl mb-6">📭</div>
+    <h2 class="font-header text-3xl font-bold mb-4 italic">NO CONTENT <span class="text-accent">DATA</span></h2>
+    <p class="text-secondary max-w-sm mx-auto">The information you requested is currently unavailable in our archives.</p>
+</div>
+{% endif %}
+{% endblock %}

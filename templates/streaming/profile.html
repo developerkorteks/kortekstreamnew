@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ user_profile.username }} - KortekStream Profile{% endblock %}
+
+{% block content %}
+<div class="mb-12">
+    <!-- PROFILE BANNER -->
+    <div class="relative h-64 md:h-80 w-full rounded-[40px] overflow-hidden group shadow-2xl border border-white/5 bg-card">
+        <img src="{{ user_profile.banner }}" alt="Profile Banner" 
+             class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70">
+        <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/40 to-transparent"></div>
+        
+        <!-- AVATAR & USERNAME OVERLAY -->
+        <div class="absolute bottom-8 left-8 md:bottom-12 md:left-12 flex flex-col md:flex-row items-end gap-6">
+            <div class="relative group/avatar">
+                <div class="absolute -inset-1 bg-gradient-to-tr from-accent to-purple-500 rounded-full blur opacity-50 group-hover/avatar:opacity-100 transition duration-500"></div>
+                <div class="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-dark bg-gradient-to-br from-accent/30 to-accent/10 flex items-center justify-center">
+                    <svg class="w-12 h-12 md:w-16 md:h-16 text-accent" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="flex flex-col mb-2">
+                <div class="flex items-center gap-3 mb-1">
+                    <h1 class="font-header text-3xl md:text-5xl font-bold tracking-tighter text-white">
+                        Streamer
+                    </h1>
+                    <span class="bg-accent/10 text-accent px-3 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase border border-accent/20">FREE</span>
+                </div>
+                <p class="text-secondary text-[10px] font-bold tracking-[0.4em] uppercase opacity-70">LOCAL PROFILE</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- STATS SECTION (Dynamic from LocalStorage) -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12" id="profileStats">
+    <div class="glass rounded-3xl p-6 text-center border-white/5 flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.3em] mb-2">Watching</span>
+        <span class="font-header text-3xl font-bold text-white" id="stat-watching">0</span>
+    </div>
+    <div class="glass rounded-3xl p-6 text-center border-white/5 flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.3em] mb-2">To Watch</span>
+        <span class="font-header text-3xl font-bold text-white" id="stat-towatch">0</span>
+    </div>
+    <div class="glass rounded-3xl p-6 text-center border-white/5 flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.3em] mb-2">Watched</span>
+        <span class="font-header text-3xl font-bold text-white" id="stat-watched">0</span>
+    </div>
+    <div class="glass rounded-3xl p-6 text-center border-white/5 flex flex-col items-center justify-center">
+        <span class="text-[10px] font-bold text-secondary uppercase tracking-[0.3em] mb-2">Collections</span>
+        <span class="font-header text-3xl font-bold text-white" id="stat-collections">0</span>
+    </div>
+</div>
+
+<!-- TABS NAVIGATION -->
+<div class="flex gap-8 border-b border-white/5 mb-10 pb-1 px-4">
+    <button onclick="showTab('watchlist')" id="tab-watchlist" class="text-xs font-bold tracking-widest text-accent border-b-2 border-accent pb-4 uppercase transition-colors">Watchlist</button>
+    <button onclick="showTab('activity')" id="tab-activity" class="text-xs font-bold tracking-widest text-secondary hover:text-white pb-4 uppercase transition-colors border-b-2 border-transparent">Activity</button>
+</div>
+
+<script>
+function showTab(tabName) {
+    // Hide all content
+    document.getElementById('watchlistContent').classList.add('hidden');
+    document.getElementById('activityContent').classList.add('hidden');
+    
+    // Reset all tabs
+    document.getElementById('tab-watchlist').classList.remove('border-accent', 'text-accent');
+    document.getElementById('tab-watchlist').classList.add('text-secondary', 'border-transparent');
+    document.getElementById('tab-activity').classList.remove('border-accent', 'text-accent');
+    document.getElementById('tab-activity').classList.add('text-secondary', 'border-transparent');
+    
+    // Show selected content and activate tab
+    if (tabName === 'watchlist') {
+        document.getElementById('watchlistContent').classList.remove('hidden');
+        document.getElementById('tab-watchlist').classList.add('border-accent', 'text-accent');
+        document.getElementById('tab-watchlist').classList.remove('text-secondary', 'border-transparent');
+    } else if (tabName === 'activity') {
+        document.getElementById('activityContent').classList.remove('hidden');
+        document.getElementById('tab-activity').classList.add('border-accent', 'text-accent');
+        document.getElementById('tab-activity').classList.remove('text-secondary', 'border-transparent');
+    }
+}
+</script>
+
+<!-- WATCHLIST CONTENT -->
+<div id="watchlistContent">
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4" id="watchlistGrid">
+        <!-- Populated by JavaScript -->
+    </div>
+</div>
+
+<!-- ACTIVITY CONTENT -->
+<div id="activityContent" class="hidden">
+    <div id="activityList" class="space-y-4">
+        <!-- Populated by JavaScript -->
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Load profile data from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof KortekStream === 'undefined') {
+            console.error('KortekStream not loaded!');
+            return;
+        }
+        
+        // Update stats
+        const stats = KortekStream.getStats();
+        document.getElementById('stat-watching').textContent = stats.watching;
+        document.getElementById('stat-towatch').textContent = stats.toWatch;
+        document.getElementById('stat-watched').textContent = stats.watched;
+        document.getElementById('stat-collections').textContent = stats.collections;
+        
+        // Load watchlist
+        const watchlist = KortekStream.getWatchlist();
+        const grid = document.getElementById('watchlistGrid');
+        
+        if (watchlist.length === 0) {
+            grid.innerHTML = `
+                <div class="col-span-full glass rounded-[40px] p-20 text-center">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-secondary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <p class="text-secondary tracking-widest uppercase text-xs">Your watchlist is currently empty</p>
+                    <a href="/" class="inline-block mt-6 glass px-6 py-3 rounded-xl text-xs font-bold hover:bg-accent transition-all">BROWSE CONTENT</a>
+                </div>
+            `;
+        } else {
+            grid.innerHTML = watchlist.map(item => {
+                // Build correct URL based on type
+                let watchUrl = '/';
+                if (item.type === 'movie') watchUrl = `/movie/${item.id}/`;
+                else if (item.type === 'tv') watchUrl = `/tv/${item.id}/`;
+                else if (item.type === 'anime') watchUrl = `/anime/${item.id}/`;
+                
+                return `
+                <a href="${watchUrl}" class="group relative block">
+                    <!-- Compact Card -->
+                    <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3 bg-black/40 border border-white/10 
+                                group-hover:border-accent/40 group-hover:shadow-[0_0_30px_rgba(229,9,20,0.3)]
+                                transition-all duration-500">
+                        ${item.poster ? `
+                            <img src="${item.poster}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        ` : `
+                            <div class="w-full h-full flex items-center justify-center">
+                                <svg class="w-16 h-16 text-secondary/30" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+                                </svg>
+                            </div>
+                        `}
+                        
+                        <!-- Remove Button -->
+                        <button onclick="event.preventDefault(); KortekStream.removeFromWatchlist('${item.id}', '${item.type}'); location.reload();" 
+                                class="absolute top-2 right-2 w-8 h-8 bg-black/70 backdrop-blur-sm rounded-lg flex items-center justify-center text-secondary hover:text-accent hover:bg-black/90 transition-all z-10">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Type Badge -->
+                        <div class="absolute top-2 left-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg text-[8px] font-bold text-accent uppercase">
+                            ${item.type}
+                        </div>
+                    </div>
+                    
+                    <!-- Title -->
+                    <h3 class="text-xs font-bold truncate group-hover:text-accent transition-colors px-1">
+                        ${item.title}
+                    </h3>
+                </a>
+            `;
+            }).join('');
+        }
+        
+        // Load recent activity from history
+        const history = KortekStream.getHistory();
+        const activityList = document.getElementById('activityList');
+        
+        if (history.length === 0) {
+            activityList.innerHTML = `
+                <div class="glass rounded-2xl p-12 text-center border-white/5">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-secondary/30" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 3H3c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.11-.9-2-2-2zm0 14H3V5h18v12z"/>
+                    </svg>
+                    <p class="text-secondary text-xs">No recent activity yet. Start watching content!</p>
+                </div>
+            `;
+        } else {
+            activityList.innerHTML = history.slice(0, 5).map(item => {
+                const timeAgo = new Date(item.watchedAt);
+                const now = new Date();
+                const diffMs = now - timeAgo;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMins / 60);
+                const diffDays = Math.floor(diffHours / 24);
+                
+                let timeText = '';
+                if (diffDays > 0) timeText = `${diffDays} DAY${diffDays > 1 ? 'S' : ''} AGO`;
+                else if (diffHours > 0) timeText = `${diffHours} HOUR${diffHours > 1 ? 'S' : ''} AGO`;
+                else if (diffMins > 0) timeText = `${diffMins} MIN${diffMins > 1 ? 'S' : ''} AGO`;
+                else timeText = 'JUST NOW';
+                
+                let episodeInfo = '';
+                if (item.season && item.episode) {
+                    episodeInfo = ` S${item.season}E${item.episode}`;
+                } else if (item.episode) {
+                    episodeInfo = ` EP${item.episode}`;
+                }
+                
+                // Build watch URL with episode info
+                let watchUrl = '/';
+                if (item.type === 'movie') {
+                    watchUrl = `/movie/${item.id}/`;
+                } else if (item.type === 'tv' && item.season && item.episode) {
+                    watchUrl = `/tv/${item.id}/?season=${item.season}&episode=${item.episode}`;
+                } else if (item.type === 'anime' && item.episode) {
+                    watchUrl = `/anime/${item.id}/?ep=${item.episode}`;
+                } else if (item.type === 'tv') {
+                    watchUrl = `/tv/${item.id}/`;
+                } else if (item.type === 'anime') {
+                    watchUrl = `/anime/${item.id}/`;
+                }
+                
+                return `
+                    <a href="${watchUrl}" class="glass rounded-2xl p-6 flex items-center justify-between border-white/5 hover:border-accent/40 transition-all group">
+                        <div class="flex items-center gap-6">
+                            <div class="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold group-hover:text-accent transition-colors">Watched <span class="text-accent italic">${item.title}</span>${episodeInfo}</div>
+                                <div class="text-[10px] text-secondary font-bold uppercase mt-1 tracking-widest">${timeText}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-[9px] text-secondary font-bold uppercase">${item.type}</div>
+                            <svg class="w-4 h-4 text-accent opacity-0 group-hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                            </svg>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        }
+    });
+</script>
+{% endblock %}
+

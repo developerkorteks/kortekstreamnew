@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}News & Articles - KortekStream{% endblock %}
+
+{% block content %}
+<div class="mb-12">
+    <h1 class="font-header text-4xl md:text-6xl font-bold mb-4 tracking-tighter">
+        KORTEKSTREAM <span class="text-accent italic">NEWS</span>
+    </h1>
+    <p class="text-secondary text-sm font-bold tracking-[0.3em] uppercase">
+        INSIGHTS, REVIEWS, AND THE LATEST FROM THE CINEMATIC UNIVERSE
+    </p>
+</div>
+
+<!-- NEWS CONTENT -->
+<div class="space-y-12">
+    <!-- FEATURED NEWS CARD (HERO) -->
+    {% for article in news %}
+        {% if article.featured %}
+        <section class="group relative overflow-hidden rounded-[40px] border border-white/5 bg-card">
+            <div class="flex flex-col lg:flex-row min-h-[400px]">
+                <div class="lg:w-3/5 relative overflow-hidden">
+                    <img src="{{ article.thumbnail }}" alt="{{ article.title }}" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-r from-card via-transparent to-transparent opacity-60"></div>
+                </div>
+                
+                <div class="lg:w-2/5 p-10 flex flex-col justify-center">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-accent/10 text-accent px-3 py-1 rounded-full text-[10px] font-bold tracking-widest">{{ article.category }}</span>
+                        <span class="text-secondary text-[10px] font-bold">{{ article.timestamp }}</span>
+                    </div>
+                    
+                    <h2 class="font-header text-3xl md:text-4xl font-bold mb-6 leading-tight group-hover:text-accent transition-colors">
+                        {{ article.title }}
+                    </h2>
+                    
+                    <p class="text-secondary text-base leading-relaxed mb-8 font-light">
+                        {{ article.summary }}
+                    </p>
+                    
+                    <div class="flex">
+                        <a href="#" class="bg-white text-dark hover:bg-accent hover:text-white px-8 py-3 rounded-full text-xs font-bold transition-all tracking-widest uppercase">
+                            Read Full Article
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    {% endfor %}
+
+    <!-- NEWS GRID (2-3 COLUMN) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for article in news %}
+            {% if not article.featured %}
+            <article class="group glass rounded-3xl overflow-hidden flex flex-col border-white/5 hover:border-accent/30 transition-all duration-500 hover:shadow-[0_0_30px_rgba(229,9,20,0.1)]">
+                <div class="aspect-[16/10] overflow-hidden relative">
+                    <img src="{{ article.thumbnail }}" alt="{{ article.title }}" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-bold tracking-widest uppercase">{{ article.category }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-8 flex-1 flex flex-col">
+                    <div class="text-[10px] text-secondary font-bold tracking-widest mb-4 opacity-50">{{ article.timestamp|upper }}</div>
+                    
+                    <h3 class="font-header text-xl font-bold mb-4 leading-snug group-hover:text-accent transition-colors flex-1">
+                        {{ article.title }}
+                    </h3>
+                    
+                    <p class="text-secondary text-sm leading-relaxed mb-6 font-light line-clamp-3">
+                        {{ article.summary }}
+                    </p>
+                    
+                    <div class="flex">
+                        <a href="#" class="text-[10px] font-bold tracking-[0.2em] text-accent hover:text-white transition-colors uppercase border-b border-accent/20 hover:border-white pb-1">
+                            Show More →
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+        {% endfor %}
+    </section>
+</div>
+
+<!-- LOAD MORE BUTTON -->
+<div class="mt-20 flex justify-center">
+    <button class="glass hover:bg-white hover:text-dark px-12 py-4 rounded-full text-xs font-bold tracking-[0.3em] transition-all">
+        LOAD MORE ARCHIVES
+    </button>
+</div>
+{% endblock %}
