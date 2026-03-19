@@ -4,7 +4,8 @@
 
 /* Custom styles that were in base.html */
 @layer base {
-  body {
+  /* Only apply these base styles if we are NOT in the django admin */
+  body:not(.admin-interface):not([class*="app-"]) {
     @apply bg-[#0B0B0B] text-white font-sans;
   }
 }

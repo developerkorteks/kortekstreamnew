@@ -84,8 +84,8 @@ class AdUnit(models.Model):
     
     class Meta:
         ordering = ['-priority', '-created_at']
-        verbose_name = "Ad Unit"
-        verbose_name_plural = "Ad Units"
+        verbose_name = "Marketing Unit"
+        verbose_name_plural = "Marketing Units"
     
     def __str__(self):
         return f"{self.name} ({self.get_ad_type_display()} - {self.get_position_display()})"

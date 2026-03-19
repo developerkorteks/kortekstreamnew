@@ -217,3 +217,16 @@ INFO 2026-03-18 18:26:56,092 services API Request: http://localhost:5000/api/mov
 INFO 2026-03-18 18:26:58,271 services API Response: Success (200)
 INFO 2026-03-18 18:37:34,139 services API Request: http://localhost:5000/api/list/movie with params: {'page': 1}
 INFO 2026-03-18 18:37:35,037 services API Response: Success (200)
+INFO 2026-03-19 16:47:27,214 services API Request: http://localhost:65535/api/list/movie with params: {'page': 1}
+INFO 2026-03-19 16:47:28,037 services API Response: Success (200)
+WARNING 2026-03-19 16:52:31,094 views 404 Error: /favicon.ico
+WARNING 2026-03-19 16:53:00,865 views 400 Error: /admin/ads/adunit/5/change/
+ERROR 2026-03-19 16:53:00,881 views 500 Error on path: /admin/ads/adunit/5/change/
+WARNING 2026-03-19 16:53:55,087 views 404 Error: /favicon.ico
+WARNING 2026-03-19 16:53:56,635 views 404 Error: /favicon.ico
+WARNING 2026-03-19 16:54:01,547 views 404 Error: /favicon.ico
+WARNING 2026-03-19 16:54:03,057 views 404 Error: /sw.js
+WARNING 2026-03-19 16:54:06,208 views 404 Error: /sw.js
+WARNING 2026-03-19 16:54:08,762 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2026-03-19 16:55:29,282 views 404 Error: /favicon.ico
+WARNING 2026-03-19 16:55:30,398 views 404 Error: /favicon.ico

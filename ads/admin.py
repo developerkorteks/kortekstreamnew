@@ -6,49 +6,39 @@ from .models import AdUnit
 @admin.register(AdUnit)
 class AdUnitAdmin(admin.ModelAdmin):
     """
-    Admin interface untuk manage Adsterra ads
-    User-friendly dengan preview dan helpful descriptions
+    Admin interface for Marketing Units.
+    Renamed and simplified to bypass aggressive ad blockers.
     """
+    # 1. Show save button at the top too! (Bypasses bottom-only filters)
+    save_on_top = True
     
     list_display = [
         'name', 
         'ad_type_badge', 
         'position_badge', 
         'status_badge',
-        'device_targeting',
-        'page_targeting',
         'priority',
         'updated_at'
     ]
     
-    list_filter = [
-        'ad_type', 
-        'position', 
-        'is_active',
-        'show_on_mobile',
-        'show_on_desktop',
-    ]
-    
-    search_fields = ['name', 'code', 'show_on_pages']
-    
+    list_filter = ['ad_type', 'position', 'is_active']
+    search_fields = ['name', 'code']
     readonly_fields = ['created_at', 'updated_at', 'code_preview']
     
+    # Avoid "Ad" wording in fieldsets
     fieldsets = (
         ('📌 Basic Information', {
             'fields': ('name', 'ad_type', 'position', 'is_active', 'priority'),
-            'description': 'Basic settings for this ad unit'
         }),
-        ('💻 Ad Code', {
-            'fields': ('code', 'code_preview'),
-            'description': '<strong>⚠️ IMPORTANT:</strong> Paste your Adsterra code EXACTLY as provided. Include the complete &lt;script&gt; tags.'
+        ('💻 Integration Code', {
+            'fields': ('code',),
         }),
-        ('📱 Device Targeting', {
-            'fields': ('show_on_mobile', 'show_on_desktop'),
-            'description': 'Choose which devices should see this ad'
+        ('🔍 Preview', {
+            'fields': ('code_preview',),
+            'classes': ('collapse',),
         }),
-        ('🎯 Page Targeting', {
-            'fields': ('show_on_pages',),
-            'description': 'Leave empty to show on ALL pages, or specify: home,anime,movie,series,player'
+        ('📱 Targeting', {
+            'fields': ('show_on_mobile', 'show_on_desktop', 'show_on_pages'),
         }),
         ('🕐 Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -57,82 +47,27 @@ class AdUnitAdmin(admin.ModelAdmin):
     )
     
     def ad_type_badge(self, obj):
-        """Display ad type with colored badge"""
-        colors = {
-            'popunder': '#FF6B6B',
-            'social_bar': '#4ECDC4',
-            'banner': '#45B7D1',
-            'native': '#96CEB4',
-            'smartlink': '#FFEAA7',
-        }
+        colors = {'popunder': '#FF6B6B', 'social_bar': '#4ECDC4', 'banner': '#45B7D1'}
         color = colors.get(obj.ad_type, '#95a5a6')
-        return format_html(
-            '<span style="background-color: {}; color: white; padding: 3px 10px; border-radius: 3px; font-size: 11px; font-weight: bold;">{}</span>',
-            color,
-            obj.get_ad_type_display()
-        )
-    ad_type_badge.short_description = 'Ad Type'
+        return format_html('<span style="background: {}; color: white; padding: 2px 8px; border-radius: 4px;">{}</span>', color, obj.get_ad_type_display())
+    ad_type_badge.short_description = 'Type'
     
     def position_badge(self, obj):
-        """Display position with badge"""
-        return format_html(
-            '<span style="background-color: #636e72; color: white; padding: 3px 8px; border-radius: 3px; font-size: 10px;">{}</span>',
-            obj.position
-        )
+        return format_html('<small style="color: #666;">{}</small>', obj.position)
     position_badge.short_description = 'Position'
     
     def status_badge(self, obj):
-        """Display active/inactive status"""
-        if obj.is_active:
-            return format_html(
-                '<span style="color: {}; font-weight: bold;">✓ Active</span>',
-                '#27ae60'
-            )
-        else:
-            return format_html(
-                '<span style="color: {}; font-weight: bold;">✗ Inactive</span>',
-                '#e74c3c'
-            )
-    status_badge.short_description = 'Status'
-    
-    def device_targeting(self, obj):
-        """Show device targeting info"""
-        devices = []
-        if obj.show_on_mobile:
-            devices.append('📱 Mobile')
-        if obj.show_on_desktop:
-            devices.append('🖥️ Desktop')
-        return ' + '.join(devices) if devices else '❌ None'
-    device_targeting.short_description = 'Devices'
-    
-    def page_targeting(self, obj):
-        """Show page targeting info"""
-        if not obj.show_on_pages:
-            return format_html('<span style="color: {};">All Pages</span>', '#27ae60')
-        pages = obj.get_page_types()
-        return ', '.join(pages[:3]) + ('...' if len(pages) > 3 else '')
-    page_targeting.short_description = 'Pages'
-    
+        icon = '✅' if obj.is_active else '❌'
+        return format_html('<span>{}</span>', icon)
+    status_badge.short_description = 'Active'
+
     def code_preview(self, obj):
-        """Show preview of the ad code (first 200 chars)"""
         if obj.code:
-            preview = obj.code[:200] + ('...' if len(obj.code) > 200 else '')
-            return format_html(
-                '<pre style="background: #f4f4f4; padding: 10px; border-radius: 5px; font-size: 11px;">{}</pre>',
-                preview
-            )
+            return format_html('<pre style="max-width: 500px; overflow: auto; background: #eee; padding: 5px;">{}</pre>', obj.code[:100] + '...')
         return '-'
-    code_preview.short_description = 'Code Preview'
-    
+
     def save_model(self, request, obj, form, change):
-        """Add any auto-fixes before saving"""
-        # Auto-add Cloudflare compatibility if missing
+        # Auto-add Cloudflare compatibility
         if '<script' in obj.code and 'data-cfasync' not in obj.code:
             obj.code = obj.code.replace('<script', '<script data-cfasync="false"', 1)
-        
         super().save_model(request, obj, form, change)
-    
-    class Media:
-        css = {
-            'all': ('admin/css/custom_admin.css',)  # Optional: custom admin CSS
-        }
