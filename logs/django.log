@@ -234,3 +234,28 @@ WARNING 2026-03-19 17:13:05,097 views 404 Error: /favicon.ico
 INFO 2026-03-19 17:13:23,562 services API Request: http://localhost:65535/api/list/movie with params: {'page': 1}
 INFO 2026-03-19 17:13:24,233 services API Response: Success (200)
 WARNING 2026-03-19 17:13:35,801 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
+INFO 2026-03-19 20:18:03,199 services API Request: http://localhost:65535/api/detail/tv/79744 with params: {'season': 1, 'episode': 2, 'providers': 'all'}
+INFO 2026-03-19 20:18:05,357 services API Response: Success (200)
+INFO 2026-03-19 20:18:22,973 services API Request: http://localhost:65535/api/detail/tv/79744 with params: {'season': 1, 'episode': 2, 'providers': 'all'}
+INFO 2026-03-19 20:18:24,058 services API Response: Success (200)
+INFO 2026-03-19 20:18:24,059 services API Request: http://localhost:65535/api/detail/anime/one-piece-100 with params: {'ep': 2, 'providers': 'all'}
+INFO 2026-03-19 20:18:24,950 services API Response: Success (200)
+WARNING 2026-03-19 20:21:07,864 views 404 Error: /favicon.ico
+INFO 2026-03-19 20:21:32,741 services API Request: http://localhost:65535/api/list/movie with params: {'page': 1}
+INFO 2026-03-19 20:21:33,902 services API Response: Success (200)
+INFO 2026-03-19 20:21:43,632 services API Request: http://localhost:65535/api/list/anime with params: {'status': 'most-popular', 'page': 1}
+INFO 2026-03-19 20:21:44,023 services API Response: Success (200)
+INFO 2026-03-19 20:21:49,649 services API Request: http://localhost:65535/api/detail/anime/one-piece-100 with params: {}
+INFO 2026-03-19 20:21:51,377 services API Response: Success (200)
+INFO 2026-03-19 20:22:12,310 services API Request: http://localhost:65535/api/detail/anime/one-piece-100 with params: {'ep': 23, 'providers': 'all'}
+INFO 2026-03-19 20:22:13,884 services API Response: Success (200)
+INFO 2026-03-19 20:22:32,051 services API Request: http://localhost:65535/api/detail/anime/one-piece-100 with params: {'ep': 1155, 'providers': 'all'}
+INFO 2026-03-19 20:22:32,998 services API Response: Success (200)
+INFO 2026-03-19 20:22:51,951 services API Request: http://localhost:65535/api/list/tv with params: {'page': 1}
+INFO 2026-03-19 20:22:53,400 services API Response: Success (200)
+INFO 2026-03-19 20:22:56,249 services API Request: http://localhost:65535/api/detail/tv/1434 with params: {'season': 1, 'episode': 1, 'providers': 'all'}
+INFO 2026-03-19 20:22:59,496 services API Response: Success (200)
+INFO 2026-03-19 20:23:04,618 services API Request: http://localhost:65535/api/detail/tv/1434 with params: {'season': 1, 'episode': 7, 'providers': 'all'}
+INFO 2026-03-19 20:23:06,616 services API Response: Success (200)
+INFO 2026-03-19 20:23:45,373 services API Request: http://localhost:65535/api/detail/tv/1434 with params: {'season': 1, 'episode': 1, 'providers': 'all'}
+INFO 2026-03-19 20:23:47,410 services API Response: Success (200)

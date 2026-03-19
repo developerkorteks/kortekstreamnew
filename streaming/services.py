@@ -268,7 +268,7 @@ class StreameXAPIClient:
         Args:
             content_type: "movie", "tv", or "anime"
             content_id: Content ID
-            **kwargs: Additional parameters (e.g., season for TV)
+            **kwargs: Additional parameters (e.g., season/episode for TV/Anime)
             
         Returns:
             Content details
@@ -277,9 +277,13 @@ class StreameXAPIClient:
             return self.get_movie_detail(content_id)
         elif content_type == "tv":
             season = kwargs.get('season', 1)
-            return self.get_tv_detail(content_id, season)
+            episode = kwargs.get('episode', 1)
+            providers = kwargs.get('providers', 'all')
+            return self.get_tv_detail(content_id, season, episode, providers)
         elif content_type == "anime":
-            return self.get_anime_detail(content_id)
+            episode = kwargs.get('episode')
+            providers = kwargs.get('providers', 'all')
+            return self.get_anime_detail(content_id, episode, providers)
         else:
             logger.error(f"Invalid content type requested: {content_type}")
             return {"error": "Content type not supported."}

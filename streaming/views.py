@@ -290,10 +290,21 @@ def tv_detail(request, tv_id):
         }
         return render(request, 'streaming/error.html', context)
     
-    # Extract sources from first episode
+    # Extract sources from the correct episode
     sources = []
     if tv_show.get('episodes') and len(tv_show['episodes']) > 0:
-        sources = tv_show['episodes'][0].get('sources', [])
+        # Find the episode that matches the requested episode number
+        target_episode = None
+        for ep in tv_show['episodes']:
+            if ep.get('episode_number') == episode:
+                target_episode = ep
+                break
+        
+        # Fallback to the first episode if not found
+        if not target_episode:
+            target_episode = tv_show['episodes'][0]
+            
+        sources = target_episode.get('sources', [])
     
     context = {
         'page_type': 'player',
@@ -338,10 +349,27 @@ def anime_detail(request, anime_id):
     # Extract extra info for template
     anime_info = anime.get('animeInfo', {})
     
-    # Extract sources from first episode
+    # Extract sources for the requested or first episode
     sources = []
     if anime.get('episodes') and len(anime['episodes']) > 0:
-        sources = anime['episodes'][0].get('sources', [])
+        # If episode number is specified, search for it in the episodes list
+        if episode:
+            target_episode = None
+            for ep in anime['episodes']:
+                # Anime often uses 'episode_no' or 'episode_number'
+                ep_num = ep.get('episode_no') or ep.get('episode_number')
+                if ep_num == episode:
+                    target_episode = ep
+                    break
+            
+            # If target not found, fallback to first episode
+            if not target_episode:
+                target_episode = anime['episodes'][0]
+        else:
+            # If no episode specified, default to first episode
+            target_episode = anime['episodes'][0]
+            
+        sources = target_episode.get('sources', [])
     
     context = {
         'page_type': 'player',
