@@ -230,3 +230,7 @@ WARNING 2026-03-19 16:54:06,208 views 404 Error: /sw.js
 WARNING 2026-03-19 16:54:08,762 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
 WARNING 2026-03-19 16:55:29,282 views 404 Error: /favicon.ico
 WARNING 2026-03-19 16:55:30,398 views 404 Error: /favicon.ico
+WARNING 2026-03-19 17:13:05,097 views 404 Error: /favicon.ico
+INFO 2026-03-19 17:13:23,562 services API Request: http://localhost:65535/api/list/movie with params: {'page': 1}
+INFO 2026-03-19 17:13:24,233 services API Response: Success (200)
+WARNING 2026-03-19 17:13:35,801 views 404 Error: /.well-known/appspecific/com.chrome.devtools.json
